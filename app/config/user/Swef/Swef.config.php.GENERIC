@@ -1,0 +1,85 @@
+<?php
+
+
+// SERVER BEHAVIOUR
+
+// Not reporting the nature of the system is just obfuscation and is not a security measure
+// In some cases reporting the nature of the system might be helpful to the client
+// In many cases X-Powered-By will be ignored
+define ( 'SWEF_SEND_HEADER_X_POWERED_BY',       true                                    );
+define ( 'SWEF_HEADER_X_POWERED_BY',            'SWEF ; a Sane WEb Framework'           );
+
+// Throw application error if HTTP connection is detected as not SSL
+// Necessarily true in production (for data protection compliance)
+define ( 'SWEF_SSL_ENFORCE',                    true                                    );
+
+// Save data in  swef_config_* as contextual,includable PHP arrays (less every-load db calls)
+// Recommended true in a production environment, false for set-up or development
+define ( 'SWEF_CONFIG_STORE_LOOKUP_FILES',      false                                   );
+
+// Choose file permissions for SWEF_MODE_SWEF, SWEF_MODE_BESPOKE or SWEF_MODE_PRODUCTION
+// Defines minimal file permissions for use by file management tools
+define ( 'SWEF_MODE',                           SWEF_MODE_SWEF                          );
+
+// Limit the size of cumulative request log (in Bytes)
+// Use 0 to use your own log rotation arrangements (recommended in production)
+define ( 'SWEF_DIAGNOSTIC_FILE_CUM_SIZE',       4096                                    );
+
+
+
+
+// SECURITY
+
+// Password encryption algorithm - WATCH OUT FOR PHP UPDATES!
+define ( 'SWEF_HASH_ALGORITHM',                 PASSWORD_BCRYPT                         );
+
+
+// DIAGNOSTIC AND ERRORS
+
+// Diagnostic is always to file and not returned to client
+// Recommended false in production when not testing
+define ( 'SWEF_DIAGNOSTIC',                     true                                    );
+
+// Other diagnostic definitions
+define ( 'SWEF_DIAGNOSTIC_DATETIME_FORMAT',     'YMdHis'                                );
+define ( 'SWEF_DIAGNOSTIC_FILE',                './app/log/swef-diagnostic.log'         );
+define ( 'SWEF_DIAGNOSTIC_FILE_CUMULATIVE',     './app/log/swef-cumulative.log'         );
+define ( 'SWEF_DIAGNOSTIC_FILE_ERROR',          './app/log/swef-error.log'              );
+define ( 'SWEF_DIAGNOSTIC_FILE_UNTRANSLATED',   './app/log/swef-untranslated.log'       );
+define ( 'SWEF_DIAGNOSTIC_TEMPLATE',            'txt/global.diagnostic.txt'             );
+
+// PHP error level - use one of SWEF_PHP_ERROR_LEVEL_* in constant.fixed.php or a bespoke level
+// In production SWEF_PHP_ERROR_LEVEL_OFF is recommended
+define ( 'SWEF_PHP_ERROR_LEVEL',                SWEF_PHP_ERROR_LEVEL_ALL                );
+
+// Google Analytics ID in the format UA-XXXXX-Y
+define ( 'SWEF_GOOGLE_ANALYTICS_ID',            ''                                      );
+
+// Google Translate API key in the format ??????
+define ( 'SWEF_LANG_API_KEY_GOOGLE',            ''                                      );
+
+// Date-time format for time display
+define ( 'SWEF_DATETIME_FORMAT_CLIENT',         'Y M jS H:i:s'                          );
+
+// Rarely changed but possibly "userland"
+define ( 'SWEF_API_CLASS_METHOD_SEP',           '::'                                    );
+define ( 'SWEF_API_JSON_DEPTH',                 5                                       );
+define ( 'SWEF_API_ENDPOINT',                   './api'                                 );
+define ( 'SWEF_API_POST_KEY',                   'JSON'                                  );
+define ( 'SWEF_CHARSET_DEFAULT',                'utf-8'                                 );
+define ( 'SWEF_COOKIE_DOMAIN',                  ''                                      );
+define ( 'SWEF_COOKIE_LANG',                    'swefLANG'                              );
+define ( 'SWEF_COOKIE_PATH',                    dirname($_SERVER['PHP_SELF'])           );
+define ( 'SWEF_COOKIE_TZOM',                    'swefTZOM'                              );
+define ( 'SWEF_DATETIME_FORMAT_TIMESTAMP',      'c'                                     );
+define ( 'SWEF_DATETIME_TZ_DATA',               'Europe/London'                         );
+define ( 'SWEF_DATETIME_TZ_GMT',                'Europe/London'                         );
+define ( 'SWEF_ENDPOINTS_MAX',                  '32'                                    );
+define ( 'SWEF_ENDPOINT_URI_PREG_MATCH',        '<^[a-z0-9_.]*$>'                       );
+define ( 'SWEF_SESSION_KEY',                    'SWEF'                                  );
+define ( 'SWEF_SESSION_KEY_CONTEXTS',           'SWEF_CONTEXTS'                         );
+define ( 'SWEF_SESSION_KEY_TRIGGER',            'SWEF_SESSIONED'                        );
+define ( 'SWEF_URI_SLUG_PREG_MATCH',            '<^[a-z0-9$\-_.+!*]*[?]?.*$>i'          );
+
+
+?>

@@ -1,0 +1,13 @@
+<?php
+
+
+// Database
+return array (
+    'SWEF_DB_PDO_DSN'       => SWEF_SUPPORTED_DATABASE_MARIADB.':host=localhost;dbname=swefseed;port=3306;charset=utf8'
+   ,'SWEF_DB_PDO_USR'       => 'root'
+   ,'SWEF_DB_PDO_PWD'       => ''
+);
+/* Select database server from SWEF_SUPPORTED_DATABASE_* in constant.fixed.php */
+
+
+?>

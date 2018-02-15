@@ -1,0 +1,61 @@
+
+# Somewhere in your Apache config you will need to edit and insert the following:
+#    # Virtual hosts for SWEF
+#    Include /home/myusername/swef-www/app/config/Swef/config.vhosts.conf
+
+
+<VirtualHost 127.0.0.1:80>
+
+   #LogLevel error rewrite:trace8
+
+# SSL ONLY ON THIS SERVER!
+RewriteEngine On
+RewriteCond %{SERVER_PORT} !^443$
+RewriteRule . https://%{HTTP_HOST}%{REQUEST_URI} [L,R]
+
+    ServerAdmin    root@localhost
+
+    ServerName          www.swef.some.domain
+    ServerAlias      www.fr.swef.some.domain
+    ServerAlias         api.swef.some.domain
+    ServerAlias   dashboard.swef.some.domain
+
+    DocumentRoot  "/home/myusername/swef-www"
+    ErrorLog      "/home/myusername/swef-www/app/log/apache-error.log"
+    CustomLog     "/home/myusername/swef-www/app/log/apache-80-access.log" common
+
+</VirtualHost>
+
+
+<VirtualHost 127.0.0.1:443>
+
+   #LogLevel error rewrite:trace8
+
+    <Directory "/home/myusername/swef-www">
+        AllowOverride all
+    </Directory>
+
+    ServerAdmin    root@localhost
+
+    ServerName          www.swef.some.domain
+    ServerAlias      www.fr.swef.some.domain
+    ServerAlias         api.swef.some.domain
+    ServerAlias   dashboard.swef.some.domain
+
+    DocumentRoot  "/home/myusername/swef-www"
+    ErrorLog      "/home/myusername/swef-www/app/log/apache-error.log"
+    CustomLog     "/home/myusername/swef-www/app/log/apache-80-access.log" common
+
+
+    # SSL directives
+
+    SSLEngine               on
+    TransferLog             "/home/myusername/swef-www/app/log/apache-443-access.log"
+    SSLCertificateFile      "conf/ssl.crt/server.crt"
+    SSLCertificateKeyFile   "conf/ssl.key/server.key"
+
+    <FilesMatch "\.(cgi|shtml|phtml|php)$">
+        SSLOptions +StdEnvVars
+    </FilesMatch>
+
+</VirtualHost>                                  
