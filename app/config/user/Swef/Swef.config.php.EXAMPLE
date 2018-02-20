@@ -48,7 +48,7 @@ define ( 'SWEF_DIAGNOSTIC_FILE_ERROR',          './app/log/swef-error.log'      
 define ( 'SWEF_DIAGNOSTIC_FILE_UNTRANSLATED',   './app/log/swef-untranslated.log'       );
 define ( 'SWEF_DIAGNOSTIC_TEMPLATE',            'txt/global.diagnostic.txt'             );
 
-// PHP error level - use one of SWEF_PHP_ERROR_LEVEL_* in constant.fixed.php or a bespoke level
+// PHP error level - use one of SWEF_PHP_ERROR_LEVEL_* in Swef.defines.php or a bespoke level
 // In production SWEF_PHP_ERROR_LEVEL_OFF is recommended
 define ( 'SWEF_PHP_ERROR_LEVEL',                SWEF_PHP_ERROR_LEVEL_ALL                );
 

@@ -7,7 +7,7 @@ return array (
    ,'SWEF_DB_PDO_USR'       => 'root'
    ,'SWEF_DB_PDO_PWD'       => ''
 );
-/* Select database server from SWEF_SUPPORTED_DATABASE_* in constant.fixed.php */
+/* Select database server from SWEF_SUPPORTED_DATABASE_* in Swef.defines.php */
 
 
 ?>
