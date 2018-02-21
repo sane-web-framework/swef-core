@@ -1,10 +1,21 @@
 
 # Somewhere in your Apache config you will need to edit and insert the following:
 #    # Virtual hosts for SWEF
-#    Include /home/myusername/swef-www/app/config/Swef/config.vhosts.conf
+#    Include <your path to>/swef-umbrella/swef-www/app/config/user/Swef/config.vhosts.conf
 
 
-<VirtualHost 127.0.0.1:80>
+<Directory "<your web directory>">
+        Options All
+        Require all granted
+</Directory>
+
+<Directory "<your path to>/swef-umbrella/swef-www">
+        Options All
+        Require all granted
+</Directory>
+
+
+<VirtualHost *:80>
 
    #LogLevel error rewrite:trace8
 
@@ -20,18 +31,18 @@ RewriteRule . https://%{HTTP_HOST}%{REQUEST_URI} [L,R]
     ServerAlias         api.swef.some.domain
     ServerAlias   dashboard.swef.some.domain
 
-    DocumentRoot  "/home/myusername/swef-www"
-    ErrorLog      "/home/myusername/swef-www/app/log/apache-error.log"
-    CustomLog     "/home/myusername/swef-www/app/log/apache-80-access.log" common
+    DocumentRoot  "<your web directory>"
+    ErrorLog      "<your path to>/swef-umbrella/swef-www/app/log/apache-error.log"
+    CustomLog     "<your path to>/swef-umbrella/swef-www/app/log/apache-80-access.log" common
 
 </VirtualHost>
 
 
-<VirtualHost 127.0.0.1:443>
+<VirtualHost *:443>
 
    #LogLevel error rewrite:trace8
 
-    <Directory "/home/myusername/swef-www">
+    <Directory "<your path to>/swef-umbrella/swef-www">
         AllowOverride all
     </Directory>
 
@@ -42,17 +53,17 @@ RewriteRule . https://%{HTTP_HOST}%{REQUEST_URI} [L,R]
     ServerAlias         api.swef.some.domain
     ServerAlias   dashboard.swef.some.domain
 
-    DocumentRoot  "/home/myusername/swef-www"
-    ErrorLog      "/home/myusername/swef-www/app/log/apache-error.log"
-    CustomLog     "/home/myusername/swef-www/app/log/apache-80-access.log" common
+    DocumentRoot  "<your web directory>"
+    ErrorLog      "<your path to>/swef-umbrella/swef-www/app/log/apache-error.log"
+    CustomLog     "<your path to>/swef-umbrella/swef-www/app/log/apache-80-access.log" common
 
 
     # SSL directives
 
     SSLEngine               on
-    TransferLog             "/home/myusername/swef-www/app/log/apache-443-access.log"
-    SSLCertificateFile      "conf/ssl.crt/server.crt"
-    SSLCertificateKeyFile   "conf/ssl.key/server.key"
+    TransferLog             "<your path to>/swef-umbrella/swef-www/app/log/apache-443-access.log"
+    SSLCertificateFile      "/etc/apache2/ssl.crt/<your crt file>"
+    SSLCertificateKeyFile   "/etc/apache2/ssl.key/<your key file>"
 
     <FilesMatch "\.(cgi|shtml|phtml|php)$">
         SSLOptions +StdEnvVars
