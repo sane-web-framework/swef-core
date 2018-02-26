@@ -236,6 +236,7 @@ define ( 'SWEF_STR_PLUGINS_CONFIG_SEP_O',       ';;'                            
 define ( 'SWEF_STR_PLUGINS_LIST',               'plugins_list'                          );
 define ( 'SWEF_PREG_CONSTANT_FIXED',            '/^\s*define\s*\(\s*([^,]+)\s*,/'       );
 define ( 'SWEF_PREG_CONSTANT_VAR',              "/\s*\'([^']+)\'\s*=\s*>\s*\'/"         );
+define ( 'SWEF_PREG_REQUIRES',                  '/^.*\.requires\.php$/'                 );
 define ( 'SWEF_STR_PROCEDURE',                  'procedure'                             );
 define ( 'SWEF_STR_PROCEDURES',                 'procedures'                            );
 define ( 'SWEF_STR_PROPERTY_PREFIX',            'property_'                             );

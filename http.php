@@ -21,8 +21,6 @@ function swef ( ) {
         // Define for HTTP (global scope)
         define ($c,$d);
     }
-    // Define and include everything else
-    require_once SWEF_CONFIG_PATH.'/static/Swef/Swef.require_once.php';
     // The executive method ( \Bespoke\Executive extends \Base\SwefExecutive )
     \Swef\Bespoke\Executive::execute ();
 }

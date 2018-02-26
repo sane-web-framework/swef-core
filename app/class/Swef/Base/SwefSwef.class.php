@@ -36,7 +36,6 @@ class SwefSwef {
     public function __construct ( ) {
         if (php_sapi_name()=='cli') {
             $this->cli          = SWEF_BOOL_TRUE;
-            // CLI error handling is configured by the console
         }
         else {
             if (SWEF_SSL_ENFORCE && !$this->isHTTPS()) {
