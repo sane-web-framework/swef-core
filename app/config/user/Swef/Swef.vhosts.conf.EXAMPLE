@@ -26,6 +26,7 @@
 
     # DocumentRoot might be a symbolic link to "<your path to>/swef-umbrella/swef-www
     DocumentRoot  "<your web directory>"
+    DirectoryIndex http.php
     ErrorLog      "<your path to>/swef-umbrella/<your swef-instance directory>/app/log/apache-error.log"
     CustomLog     "<your path to>/swef-umbrella/<your swef-instance directory>/app/log/apache-80-access.log" common
 
@@ -51,6 +52,7 @@
 
     # DocumentRoot might be a symbolic link to "<your path to>/swef-umbrella/swef-www
     DocumentRoot  "<your web directory>"
+    DirectoryIndex http.php
     ErrorLog      "<your path to>/swef-umbrella/<your swef-instance directory>/app/log/apache-error.log"
     CustomLog     "<your path to>/swef-umbrella/<your swef-instance directory>/app/log/apache-80-access.log" common
 

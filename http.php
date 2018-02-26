@@ -9,9 +9,9 @@ define ('SWEF_DIAGNOSTIC_START',intval(1000*microtime(true)));
 define ('SWEF_CONFIG_PATH','./app/config');
 
 // This HTTP portal should not be included or run by CLI
-if (str_replace('\\','/',__FILE__)!=$_SERVER['SCRIPT_FILENAME'] || php_sapi_name()=='cli') {
+if (php_sapi_name()=='cli') {
     header ('403 Access denied',true,403);
-    die ('Application error [2]: Execution error');
+    die ('Application error [1]: Execution error');
 }
 
 // The executive function
