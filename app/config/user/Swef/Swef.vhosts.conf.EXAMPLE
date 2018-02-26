@@ -4,13 +4,13 @@
 #    Include <your path to>/swef-umbrella/<your swef-instance directory>/app/config/user/Swef/Swef.vhosts.conf
 
 
-<Directory "<your path to>/swef-umbrella">
+<VirtualHost *:80>
+
+    <Directory "<your path to>/swef-umbrella">
         Options All
         Require all granted
-</Directory>
-
-
-<VirtualHost *:80>
+        AllowOverride All
+    </Directory>
 
   # SSL ONLY ON THIS SERVER!
   RewriteEngine On
@@ -33,6 +33,12 @@
 
 
 <VirtualHost *:443>
+
+    <Directory "<your path to>/swef-umbrella">
+        Options All
+        Require all granted
+        AllowOverride All
+    </Directory>
 
    #LogLevel error rewrite:trace8
 
