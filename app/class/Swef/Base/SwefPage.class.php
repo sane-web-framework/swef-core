@@ -29,21 +29,21 @@ class SwefPage extends \Swef\Bespoke\Endpoint {
 
     public function _COOKIE ($k) {
         if (!array_key_exists($k,$_COOKIE)) {
-            return SWEF_BOOL_FALSE;
+            return SWEF_STR__EMPTY;
         }
         return $_COOKIE[$k];
     }
 
     public function _GET ($k) {
         if (!array_key_exists($k,$_GET)) {
-            return SWEF_BOOL_FALSE;
+            return SWEF_STR__EMPTY;
         }
         return $_GET[$k];
     }
 
     public function _POST ($k) {
         if (!array_key_exists($k,$_POST)) {
-            return SWEF_BOOL_FALSE;
+            return SWEF_STR__EMPTY;
         }
         return $_POST[$k];
     }
