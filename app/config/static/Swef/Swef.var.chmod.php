@@ -9,10 +9,10 @@ return array (
         // A null permission is interpreted as "use equivalent from this default"
         1=>array(0755,0644), 2=>array(0755,0644), 3=>array(0555,0444)
     )
-   ,SWEF_CONFIG_PATH.'/console-class' => array (
+   ,SWEF_DIR_CONFIG.'/console-class' => array (
         1=>array(0700,0600), 2=>array(0500,0400), 3=>array(0500,0400)
     )
-   ,SWEF_CONFIG_PATH.'/console-option' => array (
+   ,SWEF_DIR_CONFIG.'/console-option' => array (
         1=>array(0700,0600), 2=>array(0500,0400), 3=>array(0500,0400)
     )
    ,SWEF_DIR_CLASS.'/base' => array (

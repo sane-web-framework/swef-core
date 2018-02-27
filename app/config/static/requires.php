@@ -1,10 +1,10 @@
 <?php
 
 // SYSTEM CONSTANTS
-require_once SWEF_CONFIG_PATH.'/static/Swef/Swef.defines.php';
+require_once './app/config/static/Swef/Swef.defines.php';
 
 // CONFIGURATION (but not database)
-require_once SWEF_CONFIG_PATH.'/user/Swef/Swef.config.php';
+require_once './app/config/user/Swef/Swef.config.php';
 
 // CLASSES
 require_once SWEF_DIR_CLASS.'/Swef/Base/SwefExecutive.class.php';

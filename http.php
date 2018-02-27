@@ -1,31 +1,29 @@
 <?php
 
 namespace Swef;
-
-// Log script start milliseconds (global scope)
-define ('SWEF_DIAGNOSTIC_START',intval(1000*microtime(true)));
-
-// Configuration for this executive script (global scope)
-define ('SWEF_CONFIG_PATH','./app/config');
-
-// This HTTP portal should not be included or run by CLI
-if (php_sapi_name()=='cli') {
-    header ('403 Access denied',true,403);
-    die ('Application error [1]: Execution error');
-}
-
-// The executive function
+error_reporting (-1);
 function swef ( ) {
-    $definitions = require_once SWEF_CONFIG_PATH.'/static/Swef/Swef.var.paths.php';
-    foreach ($definitions AS $c=>$d) {
-        // Define for HTTP (global scope)
-        define ($c,$d);
+    if (version_compare(PHP_VERSION,'7.0.0','<')) {
+        die ('Application error [1]: PHP minimum requirement is 7.0.0');
     }
-    // The executive method ( \Bespoke\Executive extends \Base\SwefExecutive )
+    if (php_sapi_name()=='cli') {
+        die ('Application error [2]: '.basename(__FILE__).' is not intended for CLI use');
+    }
+    require_once './app/config/static/requires.php';
+    foreach (scandir(SWEF_DIR_CONFIG.'/static') as $dir) {
+        if (!is_dir(SWEF_DIR_CONFIG.'/static/'.$dir)) {
+            continue;
+        }
+        foreach (scandir(SWEF_DIR_CONFIG.'/static/'.$dir) as $f) {
+            if (!preg_match(SWEF_FILE_REQUIRES_PREG,$f)) {
+                continue;
+            }
+            require_once SWEF_DIR_CONFIG.'/static/'.$dir.'/'.$f;
+        }
+    }
     \Swef\Bespoke\Executive::execute ();
 }
 
-// Run the framework
 \Swef\swef ();
 
 ?>

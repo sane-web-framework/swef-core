@@ -414,8 +414,12 @@ class SwefSwef {
             $d .= 'CANNOT WRITE TO '.SWEF_DIAGNOSTIC_FILE_UNTRANSLATED.SWEF_STR__CRLF;
         }
         if (!is_writable(SWEF_DIAGNOSTIC_FILE)) {
-            echo 'DIAGNOSTIC FILE "'.SWEF_DIAGNOSTIC_FILE.'" IS NOT WRITABLE<br/>'.SWEF_STR__CRLF;
-            return;
+            touch (SWEF_DIAGNOSTIC_FILE);
+            chmod (SWEF_DIAGNOSTIC_FILE,SWEF_CHMOD_FILE);
+            if (!is_writable(SWEF_DIAGNOSTIC_FILE)) {
+                echo 'DIAGNOSTIC FILE "'.SWEF_DIAGNOSTIC_FILE.'" IS NOT WRITABLE<br/>'.SWEF_STR__CRLF;
+                return;
+            }
         }
         $fp                 = fopen (SWEF_DIAGNOSTIC_FILE,$o);
         if (!$fp) {
@@ -591,9 +595,15 @@ class SwefSwef {
     public function phrasesLoad ( ) {
         if (SWEF_DIAGNOSTIC) {
             if (!is_readable(SWEF_DIAGNOSTIC_FILE_UNTRANSLATED)) {
-                touch (SWEF_DIAGNOSTIC_FILE_UNTRANSLATED);
-                if (!is_readable(SWEF_DIAGNOSTIC_FILE_UNTRANSLATED)) {
-                    $this->diagnosticPush ('phrasesLoad(): could not touch '.SWEF_DIAGNOSTIC_FILE_UNTRANSLATED);
+                $f  = @fopen (SWEF_DIAGNOSTIC_FILE_UNTRANSLATED,SWEF_F_WRITE);
+                $w  = null;
+                if ($f) {
+                    $w = @fwrite ($f,SWEF_FILE_UNTRANSLATED_CONTENTS);
+                    @fclose ($f);
+                    @chmod (SWEF_DIAGNOSTIC_FILE_UNTRANSLATED,SWEF_CHMOD_FILE);
+                }
+                if (!$w) {
+                    $this->diagnosticPush ('phrasesLoad(): could not create '.SWEF_DIAGNOSTIC_FILE_UNTRANSLATED);
                     return;
                 }
             }
@@ -622,11 +632,15 @@ class SwefSwef {
             $parts      = explode (SWEF_STR__DASH,$lang);
             array_pop ($parts);
             if (!count($parts)) {
+                $this->phrases = array ();
                 return;
             }
             $lang       = implode (SWEF_STR__DASH,$parts);
         }
         $this->phrases  = require_once $file.$lang;
+        if (!$this->phrases) {
+            $this->phrases = array ();
+        }
     }
 
     public function pluginsList ( ) {
@@ -918,8 +932,9 @@ ob_end_clean ();
         $this->notify ('You have been logged out');
     }
 
-    public function version () {
-        return trim (file_get_contents(dirname(__FILE__).'/'.SWEF_FILE_VERSION));
+    public function version ( ) {
+        // Interrogate git for local version of swef-core or ... ?
+        return 0;
     }
 
 }

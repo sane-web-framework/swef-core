@@ -91,8 +91,8 @@ class SwefMoment {
         else {
             $s      = '+';
         }
-        $r          = str_pad (bcmod($m,60),2,'0',STR_PAD_LEFT);
-        $l          = bcdiv   (bcsub($m,$r),60);
+        $r          = str_pad (\bcmod($m,60),2,'0',STR_PAD_LEFT);
+        $l          = bcdiv   (\bcsub($m,$r),60);
         return $s.str_pad($l.':'.$r,5,'0',STR_PAD_LEFT);
     }
 

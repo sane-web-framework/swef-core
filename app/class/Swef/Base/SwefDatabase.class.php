@@ -151,13 +151,13 @@ class SwefDatabase {
             $var = @require_once SWEF_FILE_CONFIG_DB;
         }
         catch (ParseError $e) {
-            array_push ($this->errors,'Config file '.SWEF_CONFIG_PATH.'/database.var could not be parsed - syntax error');
+            array_push ($this->errors,'Config file '.SWEF_FILE_CONFIG_DB.' could not be parsed - syntax error');
             header (SWEF_HTTP_STATUS_MSG_555);
             return SWEF_BOOL_FALSE;
         }
         $this->DSN          = $var['SWEF_DB_PDO_DSN'];
         if (!is_array($var)) {
-            array_push ($this->errors,'Config file '.SWEF_CONFIG_PATH.'/database.var did not return an array');
+            array_push ($this->errors,'Config file '.SWEF_FILE_CONFIG_DB.' did not return an array');
             header (SWEF_HTTP_STATUS_MSG_555);
             return SWEF_BOOL_FALSE;
         }
