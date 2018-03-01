@@ -1,0 +1,41 @@
+
+# Include this file in your web server config a bit like this:
+#    Include <your path to>/swef-umbrella/<your swef-instance directory>/.swef/swef-core-vhosts.conf
+
+
+<VirtualHost *:443>
+
+    <Directory "<your path to>/swef-umbrella">
+        Options All
+        Require all granted
+        AllowOverride All
+    </Directory>
+
+   #LogLevel error rewrite:trace8
+
+    ServerAdmin    root@localhost
+
+    ServerName          www.swef.some.domain
+    ServerAlias      www.fr.swef.some.domain
+    ServerAlias         api.swef.some.domain
+    ServerAlias   dashboard.swef.some.domain
+
+    # DocumentRoot might be a symbolic link to "<your path to>/swef-umbrella/swef-www
+    DocumentRoot  "<your web directory>"
+    DirectoryIndex http.php
+    ErrorLog      "<your path to>/swef-umbrella/<your swef-instance directory>/app/log/apache-error.log"
+    CustomLog     "<your path to>/swef-umbrella/<your swef-instance directory>/app/log/apache-80-access.log" common
+
+
+    # SSL directives
+
+    SSLEngine               on
+    TransferLog             "<your path to>/swef-umbrella/<your swef-instance directory>/app/log/apache-443-access.log"
+    SSLCertificateFile      "<your crt file path>"
+    SSLCertificateKeyFile   "<your key file path>"
+
+    <FilesMatch "\.(cgi|shtml|phtml|php)$">
+        SSLOptions +StdEnvVars
+    </FilesMatch>
+
+</VirtualHost>                                  

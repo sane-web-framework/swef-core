@@ -1,0 +1,21 @@
+<your path to>/swef-umbrella/swef-www/app/log/apache-*.log {
+    daily
+    missingok
+    rotate 14
+    compress
+    delaycompress
+    notifyempty
+    create 640 <your OS account> <your OS group>
+}
+
+<your path to>/swef-umbrella/swef-www/app/log/swef-cumulative.log {
+    daily
+    missingok
+    rotate 14
+    compress
+    delaycompress
+    notifyempty
+    create 640 <your OS account> <your OS group>
+}
+
+
