@@ -26,8 +26,8 @@ define ( 'SWEF_MODE',                           SWEF_MODE_SWEF                  
 define ( 'SWEF_DIAGNOSTIC_FILE_CUM_SIZE',       4096                                    );
 
 // Chmod value for files and directories written by web server
-define ( 'SWEF_CHMOD_DIR',                      0777                                    );
-define ( 'SWEF_CHMOD_FILE',                     0666                                    );
+define ( 'SWEF_CHMOD_DIR',                      0770                                    );
+define ( 'SWEF_CHMOD_FILE',                     0660                                    );
 
 
 
