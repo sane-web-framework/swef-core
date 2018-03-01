@@ -125,24 +125,30 @@ define ( 'SWEF_COL_VERIFIED',                   'verified'                      
 define ( 'SWEF_COL_VALUE_MIN',                  'value_min'                                 );
 define ( 'SWEF_COL_VALUE_MAX',                  'value_max'                                 );
 
-// PDO error mode is not user configurable as SWEF database methods rely upon it
+// PDO error mode for \Swef\Base\SwefDatabase
 define ( 'SWEF_DB_PDO_E_MODE',                  PDO::ERRMODE_EXCEPTION                      );
 define ( 'SWEF_STR_PDO_DBNAME',                 'dbname'                                    );
 
 // HTTP related
+define ( 'SWEF_HTTP_CONTENTTYPE_DEFAULT',       'text/html; charset=UTF-8'                  );
 define ( 'SWEF_GET_CLASSNAME',                  'c'                                         );
 define ( 'SWEF_GET_OPTION',                     'o'                                         );
-define ( 'SWEF_HTTP_HEADER_CONTENTTYPE',        'text/html; charset=UTF-8'                  );
-define ( 'SWEF_HTTP_STATUS_CODE_200',           '200'                                       );
+define ( 'SWEF_HTTP_STATUS_CODE_200',           200                                         );
 define ( 'SWEF_HTTP_STATUS_MSG_200',            '200 OK'                                    );
-define ( 'SWEF_HTTP_STATUS_CODE_403',           '403'                                       );
+define ( 'SWEF_HTTP_STATUS_CODE_403',           403                                         );
 define ( 'SWEF_HTTP_STATUS_MSG_403',            '403 Unauthorised'                          );
-define ( 'SWEF_HTTP_STATUS_CODE_404',           '404'                                       );
+define ( 'SWEF_HTTP_STATUS_CODE_404',           404                                         );
 define ( 'SWEF_HTTP_STATUS_MSG_404',            '404 Not found'                             );
-define ( 'SWEF_HTTP_STATUS_CODE_444',           '444'                                       );
-define ( 'SWEF_HTTP_STATUS_MSG_444',            '444 Client sent illegal input(s)'          );
-define ( 'SWEF_HTTP_STATUS_CODE_555',           '555'                                       );
-define ( 'SWEF_HTTP_STATUS_MSG_555',            '555 Web application error'                 );
+define ( 'SWEF_HTTP_STATUS_CODE_418',           418                                         );
+define ( 'SWEF_HTTP_STATUS_MSG_418',            '418 I am a teapot (sorry no coffee)'       );
+define ( 'SWEF_HTTP_STATUS_CODE_419',           419                                         );
+define ( 'SWEF_HTTP_STATUS_MSG_419',            '419 Here is my handle (use me right)'      );
+define ( 'SWEF_HTTP_STATUS_CODE_420',           420                                         );
+define ( 'SWEF_HTTP_STATUS_MSG_420',            '420 Here is my spout (use me nicely)'      );
+define ( 'SWEF_HTTP_STATUS_CODE_444',           444                                         );
+define ( 'SWEF_HTTP_STATUS_MSG_444',            '444 You talk nonsense (bad arguments)'     );
+define ( 'SWEF_HTTP_STATUS_CODE_555',           555                                         );
+define ( 'SWEF_HTTP_STATUS_MSG_555',            '555 I talk nonsense (my brain hurts)'      );
 
 // Integer tokens
 define ( 'SWEF_INT_0',                          0                                           );
@@ -219,6 +225,7 @@ define ( 'SWEF_FUNCTION_USERLOGOUT',            'userLogout'                    
 define ( 'SWEF_STR_ACCESS',                     'access'                                    );
 define ( 'SWEF_STR_ARGS',                       'args'                                      );
 define ( 'SWEF_STR_BOOLEAN',                    'boolean'                                   );
+define ( 'SWEF_STR_CGI',                        'cgi'                                       );
 define ( 'SWEF_STR_CLASS',                      'class'                                     );
 define ( 'SWEF_STR_CONFIG',                     'configuration'                             );
 define ( 'SWEF_STR_CONSTANT',                   'constant'                                  );
@@ -235,6 +242,8 @@ define ( 'SWEF_STR_EXT_LOG',                    '.log'                          
 define ( 'SWEF_STR_EXT_PHP',                    '.php'                                      );
 define ( 'SWEF_STR_EXT_VAR',                    '.var'                                      );
 define ( 'SWEF_STR_FREQUENCY',                  'frequency'                                 );
+define ( 'SWEF_STR_HEADER_PREFIX_CGI',          'Status: '                                  );
+define ( 'SWEF_STR_HEADER_PREFIX_MOD',          'HTTP/1.1 '                                 );
 define ( 'SWEF_STR_INIT',                       'init'                                      );
 define ( 'SWEF_STR_X_POWERED_BY',               'X-Powered-By: '                            );
 define ( 'SWEF_STR_HELP',                       'help'                                      );
