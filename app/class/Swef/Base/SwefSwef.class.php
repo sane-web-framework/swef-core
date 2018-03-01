@@ -289,6 +289,7 @@ class SwefSwef {
         }
         @fwrite ($fp,$string);
         @fclose ($fp);
+        @chmod (SWEF_DIAGNOSTIC_FILE_CUMULATIVE,SWEF_CHMOD_FILE);
         $path           = realpath (SWEF_DIAGNOSTIC_FILE_CUMULATIVE);
         $cmd            = 'truncate -s "'.intval(SWEF_DIAGNOSTIC_FILE_CUM_SIZE).' '.escapeshellarg($path);
         exec ($cmd);
@@ -405,6 +406,7 @@ class SwefSwef {
                 $xml  = str_replace (SWEF_STR__GT.SWEF_STR__LT,SWEF_STR__GT.SWEF_STR__LF.SWEF_STR__LT,$xml); // HACK
                 fwrite ($fp,$xml);
                 fclose ($fp);
+                chmod (SWEF_DIAGNOSTIC_FILE_UNTRANSLATED,SWEF_CHMOD_FILE);
             }
             else {
                 $d .= 'fopen('.SWEF_DIAGNOSTIC_FILE_UNTRANSLATED.','.SWEF_F_WRITE.') DID NOT WORK'.SWEF_STR__CRLF;
@@ -444,6 +446,7 @@ class SwefSwef {
         }
         @fwrite ($fp,$this->moment->server(SWEF_DIAGNOSTIC_DATETIME_FORMAT).SWEF_STR__SPACE.$this->err);
         @fclose ($fp);
+        @chmod (SWEF_DIAGNOSTIC_FILE_ERROR,SWEF_CHMOD_FILE);
     }
 
     public function getDefinedConstants ( ) {
@@ -499,6 +502,7 @@ class SwefSwef {
         if ($fp) {
             $write  = @fwrite ($fp,'<?php'.SWEF_STR__CRLF.'return '.$str.';'.SWEF_STR__CRLF.' ?>');
             @fclose ($fp);
+            @chmod ($file,SWEF_CHMOD_FILE);
         }
         if ($write) {
             return SWEF_BOOL_TRUE;
