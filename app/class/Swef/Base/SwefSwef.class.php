@@ -248,7 +248,7 @@ class SwefSwef {
         }
         if (!$this->sessionCheck()) {
             $this->diagnosticPush ('cookie(): session must be started before cookies can be saved to it');
-            header (SWEF_HTTP_STATUS_MSG_555);
+            $this->statusHeader (SWEF_HTTP_STATUS_CODE_555);
             return SWEF_BOOL_FALSE;
         }
         // Timezone offset
@@ -451,6 +451,21 @@ class SwefSwef {
         $c = $c[SWEF_STR_USER];
         ksort ($c);
         return $c;
+    }
+
+    public static function statusHeader ($statusCode) {
+        $msg        = constant ('SWEF_HTTP_STATUS_MSG_'.$statusCode);
+        if (!strlen($msg)) {
+            http_response_code ($statusCode);
+            return;
+        }
+        if (substr(php_sapi_name(),0,3)==SWEF_STR_CGI) {
+            $msg    = SWEF_STR_HEADER_PREFIX_CGI.$msg;
+        }
+        else {
+            $msg    = SWEF_STR_HEADER_PREFIX_MOD.$msg;
+        }
+        header ($msg,SWEF_BOOL_TRUE,$statusCode);
     }
 
     public function isHTTPS ( ) {
@@ -679,7 +694,7 @@ class SwefSwef {
     public function pluginsStart ( ) {
         if (!is_object($this->page)) {
             $this->diagnosticPush ('pluginsStart(): page must be constructed before starting plugins');
-            header (SWEF_HTTP_STATUS_MSG_555);
+            $this->statusHeader (SWEF_HTTP_STATUS_CODE_555);
             return SWEF_BOOL_FALSE;
         }
         $this->diagnosticPush ('Checking '.count($this->plugins).' plugins');
@@ -711,7 +726,7 @@ class SwefSwef {
             return SWEF_BOOL_FALSE;
         }
         $this->diagnosticPush ('pullStop(): too many levels of endpoint pulling - refusing to add more');
-        header (SWEF_HTTP_STATUS_MSG_555);
+        $this->statusHeader (SWEF_HTTP_STATUS_CODE_555);
         return SWEF_BOOL_TRUE;
     }
 

@@ -27,7 +27,7 @@ class SwefDatabase {
         $this->notices      = array ();
         if (!in_array($this->type,$this->types)) {
             array_push ($this->errors,'Database type "'.$this->type.'" is not supported');
-            header (SWEF_HTTP_STATUS_MSG_555);
+            \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
             return SWEF_BOOL_FALSE;
         }
         // Process inputs
@@ -35,7 +35,7 @@ class SwefDatabase {
         $proc               = array_shift ($args);
         if (!$proc) {
             array_push ($this->errors,'Stored procedure name not given!');
-            header (SWEF_HTTP_STATUS_MSG_555);
+            \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
             return SWEF_BOOL_FALSE;
         }
         // Validation filter and build argument placeholders
@@ -55,7 +55,7 @@ class SwefDatabase {
             // Placeholder
             if (!strlen($proc) && $proc!==SWEF_STR__EMPTY) {
                 array_push ($this->errors,$proc.'(): argument cannot be false or null!');
-                header (SWEF_HTTP_STATUS_MSG_555);
+                \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
                 return SWEF_BOOL_FALSE;
             }
             array_push ($phs,SWEF_STR__QMARK);
@@ -75,7 +75,7 @@ class SwefDatabase {
         }
         catch (\PDOException $e) {
             array_push ($this->errors,$proc.'() statement not prepared: '.$e->getMessage());
-            header (SWEF_HTTP_STATUS_MSG_555);
+            \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
             return SWEF_BOOL_FALSE;
         }
         // Escape and bind arguments
@@ -85,7 +85,7 @@ class SwefDatabase {
             }
             catch (\PDOException $e) {
                 array_push ($this->errors,$proc.'() could not bind parameter: '.$e->getMessage());
-                header (SWEF_HTTP_STATUS_MSG_555);
+                \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
                 return SWEF_BOOL_FALSE;
             }
         }
@@ -94,7 +94,7 @@ class SwefDatabase {
         }
         catch (\PDOException $e) {
             array_push ($this->errors,$proc.'() could not execute query: '.$e->getMessage());
-            header (SWEF_HTTP_STATUS_MSG_555);
+            \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
             return SWEF_BOOL_FALSE;
         }
         // Execution was successful
@@ -128,7 +128,7 @@ class SwefDatabase {
             catch (\PDOException $e) {
                 array_push ($this->errors,'PostgreSQL error: '.$e->getMessage());
                 $this->PDO      = null;
-                header (SWEF_HTTP_STATUS_MSG_555);
+                \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
                 return SWEF_BOOL_FALSE;
             }
         }
@@ -152,20 +152,20 @@ class SwefDatabase {
         }
         catch (ParseError $e) {
             array_push ($this->errors,'Config file '.SWEF_FILE_CONFIG_DB.' could not be parsed - syntax error');
-            header (SWEF_HTTP_STATUS_MSG_555);
+            \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
             return SWEF_BOOL_FALSE;
         }
         $this->DSN          = $var['SWEF_DB_PDO_DSN'];
         if (!is_array($var)) {
             array_push ($this->errors,'Config file '.SWEF_FILE_CONFIG_DB.' did not return an array');
-            header (SWEF_HTTP_STATUS_MSG_555);
+            \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
             return SWEF_BOOL_FALSE;
         }
         $this->type         = explode (SWEF_STR__COLON,$var['SWEF_DB_PDO_DSN']);
         $this->type         = array_shift ($this->type);
         if (!in_array($this->type,$this->types)) {
             array_push ($this->errors,'Database type "'.$this->type.'" is not supported');
-            header (SWEF_HTTP_STATUS_MSG_555);
+            \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
             return SWEF_BOOL_FALSE;
         }
         try {
@@ -178,7 +178,7 @@ class SwefDatabase {
         }
         catch (\PDOException $e) {
             array_push ($this->errors,'Database not connected: '.$e->getMessage());
-            header (SWEF_HTTP_STATUS_MSG_555);
+            \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
             return SWEF_BOOL_FALSE;
         }
         return SWEF_BOOL_TRUE;

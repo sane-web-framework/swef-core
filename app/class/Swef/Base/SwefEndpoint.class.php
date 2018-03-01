@@ -16,7 +16,7 @@ class SwefEndpoint extends \DOMDocument {
     public function __construct ($swef,$endpoint=SWEF_STR__EMPTY) {
         parent::__construct ();
         $this->swef                     = $swef;
-        $this->endpoint                = $endpoint;
+        $this->endpoint                 = $endpoint;
     }
 
     public function __destruct () {
@@ -88,7 +88,7 @@ class SwefEndpoint extends \DOMDocument {
 
     public function identify ( ) {
         $this->router           = $this->identifyRouter ($this->endpoint);
-        $this->template         = $this->identifyTemplate ();
+        $this->template         = $this->identifyTemplate ($this->endpoint);
     }
 
     public function identifyRouter ( ) {
@@ -114,11 +114,11 @@ class SwefEndpoint extends \DOMDocument {
         return SWEF_BOOL_FALSE;
     }
 
-    public function identifyTemplate ( ) {
+    public function identifyTemplate ($endpoint) {
         foreach ($this->swef->templates as $i=>$t) {
-            $this->diagnosticAdd             ('endpoint: '.$this->endpoint);
+            $this->diagnosticAdd             ('endpoint: '.$endpoint);
             $this->diagnosticAdd             ('    regexp: '.$t[SWEF_COL_ENDPOINT_PREG]);
-            if (preg_match ($t[SWEF_COL_ENDPOINT_PREG],$this->endpoint,$m)) {
+            if (preg_match ($t[SWEF_COL_ENDPOINT_PREG],$endpoint,$m)) {
                 $this->diagnosticAdd         ('        MATCHED');
                 $t[SWEF_COL_TEMPLATE] = $t[SWEF_COL_TEMPLATE_BACKREFERENCED];
                 $this->diagnosticAdd         ('            template: '.$t[SWEF_COL_TEMPLATE]);
@@ -165,7 +165,7 @@ class SwefEndpoint extends \DOMDocument {
                 $this->diagnosticAdd ('plugin['.$i.'] is not an object');
                 continue;
             }
-            $c  = get_class($this->plugin[$i]);
+            $c  = get_class ($this->plugin[$i]);
             if (!method_exists($this->plugin[$i],$method)) {
                 $this->diagnosticAdd ('method '.$c.'::'.$method.'() does not exist');
                 continue;

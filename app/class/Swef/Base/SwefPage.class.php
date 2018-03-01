@@ -79,7 +79,7 @@ class SwefPage extends \Swef\Bespoke\Endpoint {
             header (SWEF_STR_CONTENTTYPE.$this->template[SWEF_COL_CONTENTTYPE]);
         }
         else {
-            header (SWEF_STR_CONTENTTYPE.SWEF_HTTP_HEADER_CONTENTTYPE);
+            header (SWEF_STR_CONTENTTYPE.SWEF_HTTP_CONTENTTYPE_DEFAULT);
         }
         if (SWEF_SEND_HEADER_X_POWERED_BY) {
             header (SWEF_STR_X_POWERED_BY.SWEF_HEADER_X_POWERED_BY);
@@ -180,29 +180,36 @@ class SwefPage extends \Swef\Bespoke\Endpoint {
         // FRAMEWORK HEADERS MAY BE OVER-WRITTEN BY COMPONENTS - LAST HEADER WINS
         $this->headers ();
 // >>---
-        // BUFFER ALL OUTPUT
+        // GLOBAL BUFFER START
         ob_start ();
-// -----
     // >>---
-            // BUFFER SCRIPT OUTPUT
+            // SCRIPT BUFFER START
             ob_start ();
-    // -----
         // RUN SCRIPT
         if ($this->pluginsRun(SWEF__ON_PAGESCRIPTBEFORE)) {
-            // No plugin has cancelled the page script
             if (is_readable(SWEF_DIR_ENDPOINT.'/'.$this->endpoint.SWEF_STR_EXT_PHP)) {
-                    require (SWEF_DIR_ENDPOINT.'/'.$this->endpoint.SWEF_STR_EXT_PHP);
+                require (SWEF_DIR_ENDPOINT.'/'.$this->endpoint.SWEF_STR_EXT_PHP);
+                $this->diagnosticAdd ('Framework require()d this: '.$this->endpoint.SWEF_STR_EXT_PHP);
             }
-    // -----
+            else {
+                $this->diagnosticAdd ('File is unreadable: '.$this->endpoint.SWEF_STR_EXT_PHP);
+            }
+        }
+        else {
+            $this->diagnosticAdd ('Plugin(s) cancelled this: '.$this->endpoint.SWEF_STR_EXT_PHP);
         }
         $this->scriptBuffer                             = ob_get_contents ();
-        ob_end_clean ();
+            ob_end_clean ();
+            // SCRIPT BUFFER END
     // <<---
-        // RUN TEMPLATE
+        // RUN TEMPLATE (WHICH MIGHT OUTPUT SCRIPT BUFFER)
         if ($this->template) {
             if ($this->pluginsRun(SWEF__ON_PAGETEMPLATEBEFORE)) {
                 // No plugin has cancelled the page template
                 require (SWEF_DIR_TEMPLATE.'/'.$this->template[SWEF_COL_TEMPLATE]);
+            }
+            else {
+                $this->diagnosticAdd ('Plugin(s) cancelled this: '.$this->endpoint.SWEF_STR_EXT_PHP);
             }
         }
 // -----
