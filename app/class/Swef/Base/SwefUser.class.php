@@ -10,6 +10,7 @@ class SwefUser {
     public  $userName;                             // Display name
     public  $uuid;                                 // UUID
     public  $verified               = 0;           // Registered user has completed verificastion
+    public  $verifyFail;                           // Right user credentials but obligatory verification caused failure
 
     public function __construct ($swef) {
         $this->swef                 = $swef;
@@ -44,6 +45,7 @@ class SwefUser {
             $this->swef->diagnosticPush ('May only be called via '.SWEF_CLASS_SWEF.'::'.SWEF_FUNCTION_USERLOGIN.'()');
             return $this->swef->userLogin ($email,$password);
         }
+        $this->verifyFail = null;
         $u = $this->swef->db->dbCall (SWEF_CALL_USERAUTHENTICATE,$email);
         if (!is_array($u)) {
             $this->swef->diagnosticPush ('ERROR - login query failed');
@@ -53,18 +55,27 @@ class SwefUser {
             $this->swef->diagnosticPush ('ERROR - email/password not found');
             return SWEF_BOOL_FALSE;
         }
+        $this->swef->diagnosticPush ('USER = '.print_r($u[0],SWEF_BOOL_TRUE));
         if ($u[0][SWEF_COL_VERIFIED] || !$must_verify) {
             if (password_verify($password,$u[0][SWEF_COL_PASSWORD_HASH])) {
                 // Complete log-in process
                 $this->swef->diagnosticPush ('Login OK');
+                $this->swef->diagnosticPush (print_r($u[0],SWEF_BOOL_TRUE));
                 $this->verified     = $u[0][SWEF_COL_VERIFIED];
                 $this->uuid         = $u[0][SWEF_COL_UUID];
                 $this->email        = $email;
                 $this->userName     = $u[0][SWEF_COL_USER_NAME];
                 $this->redefine ();
             }
+            else {
+                $this->swef->diagnosticPush ('No login available - password did not validate');
+            }
         }
-        return $email;
+        else {
+            $this->verifyFail       = SWEF_BOOL_TRUE;
+            $this->swef->diagnosticPush ('No login available - user needs to be verified');
+        }
+        return $this->email;
     }
 
     public function logout ( ) {

@@ -920,13 +920,6 @@ ob_end_clean ();
             $this->diagnosticPush ('userLogin(): already logged in as '.$this->user->email);
         }
         elseif ($this->user->login($email,$password,$this->context[SWEF_COL_MUST_BE_VERIFIED])) {
-            if (!$this->user->verified) {
-                $this->notify ('Account verification not complete');
-            }
-            if (!$this->user->email) {
-                $this->diagnosticPush ('userLogin(): Login was OK but not verified');
-                return SWEF_BOOL_FALSE;
-            }
             $this->diagnosticPush ('userLogin(): login details were correct');
             if ($this->page->identifyRouter($this->page->endpoint)) {
                 $this->diagnosticPush ('userLogin(): PASS - router identified for '.$email);
@@ -936,8 +929,13 @@ ob_end_clean ();
                 $this->userLogout ();
             }
         }
+        elseif ($this->user->verifyFail) {
+            $this->diagnosticPush ('userLogin(): Login was OK but not verified');
+            $this->notify ('Account verification is compulsory');
+        }
         else {
             $this->diagnosticPush ('userLogin(): FAIL - login details were incorrect');
+            $this->notify ('Failed - please try again');
         }
         $this->diagnosticPush ('userLogin(): email = '.$this->user->email);
         return $this->user->email;
