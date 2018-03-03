@@ -277,6 +277,7 @@ define ( 'SWEF_STR_UTF8',                       'UTF-8'                         
 define ( 'SWEF_STR_UUIDS',                      'uuids'                                     );
 define ( 'SWEF_STR_WHITESPACE_PREG',            '<\s+>'                                     );
 define ( 'SWEF_STR_WILDCARD',                   '*'                                         );
+define ( 'SWEF_VENDOR_SWEF',                    'Swef'                                      );
 define ( 'SWEF_XML_ATTR_FROM',                  'from'                                      );
 define ( 'SWEF_XML_ATTR_TO',                    'to'                                        );
 define ( 'SWEF_XML_TAG_PHRASE',                 'phrase'                                    );
