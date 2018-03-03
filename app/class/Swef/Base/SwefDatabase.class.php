@@ -14,9 +14,9 @@ class SwefDatabase {
     private $type;
     private $types;
 
-    public function __construct ( ) {
+    public function __construct ($dsn,$usr,$pwd) {
         $this->types        = explode (SWEF_STR__COMMA,SWEF_SUPPORTED_DATABASE_DRIVERS);
-        $this->dbConnect ();
+        $this->dbConnect ($dsn,$usr,$pwd);
     }
 
     public function __destruct ( ) {
@@ -136,51 +136,49 @@ class SwefDatabase {
         return SWEF_BOOL_TRUE;
     }
 
-    public function dbConnect ( ) {
+    private function dbConnect ($dsn,$usr,$pwd) {
         if (is_object($this->PDO)) {
             return SWEF_BOOL_TRUE;
         }
-        $options = array (
-            \PDO::ATTR_ERRMODE => SWEF_DB_PDO_E_MODE
-        );
-        if (!is_readable(SWEF_FILE_CONFIG_DB)) {
-            array_push ($this->errors,'Database config file '.SWEF_FILE_CONFIG_DB.'is not readable');
+        if ($dsn==null) {
+            if (!is_readable(SWEF_FILE_CONFIG_DB)) {
+                array_push ($this->errors,'Database config file '.SWEF_FILE_CONFIG_DB.'is not readable');
+                return SWEF_BOOL_FALSE;
+            }
+            try {
+                $var = @require_once SWEF_FILE_CONFIG_DB;
+            }
+            catch (ParseError $e) {
+                array_push ($this->errors,'Config file '.SWEF_FILE_CONFIG_DB.' could not be parsed - syntax error');
+                \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
+                return SWEF_BOOL_FALSE;
+            }
+            if (!is_array($var)) {
+                array_push ($this->errors,'Config file '.SWEF_FILE_CONFIG_DB.' did not return an array');
+                \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
+                return SWEF_BOOL_FALSE;
+            }
+            $dsn            = $var['SWEF_DB_PDO_DSN'];
+            $usr            = $var['SWEF_DB_PDO_USR'];
+            $pwd            = $var['SWEF_DB_PDO_PWD'];
+        }
+        $type               = explode (SWEF_STR__COLON,$dsn);
+        $type               = array_shift ($type);
+        if (!in_array($type,$this->types)) {
+            array_push ($this->errors,'Database type "'.$type.'" is not supported');
+            \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
             return SWEF_BOOL_FALSE;
         }
         try {
-            $var = @require_once SWEF_FILE_CONFIG_DB;
-        }
-        catch (ParseError $e) {
-            array_push ($this->errors,'Config file '.SWEF_FILE_CONFIG_DB.' could not be parsed - syntax error');
-            \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
-            return SWEF_BOOL_FALSE;
-        }
-        $this->DSN          = $var['SWEF_DB_PDO_DSN'];
-        if (!is_array($var)) {
-            array_push ($this->errors,'Config file '.SWEF_FILE_CONFIG_DB.' did not return an array');
-            \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
-            return SWEF_BOOL_FALSE;
-        }
-        $this->type         = explode (SWEF_STR__COLON,$var['SWEF_DB_PDO_DSN']);
-        $this->type         = array_shift ($this->type);
-        if (!in_array($this->type,$this->types)) {
-            array_push ($this->errors,'Database type "'.$this->type.'" is not supported');
-            \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
-            return SWEF_BOOL_FALSE;
-        }
-        try {
-            $this->PDO = new \PDO (
-                $var['SWEF_DB_PDO_DSN']
-               ,$var['SWEF_DB_PDO_USR']
-               ,$var['SWEF_DB_PDO_PWD']
-               ,$options
-            );
+            $this->PDO      = new \PDO ($dsn,$usr,$pwd,array(\PDO::ATTR_ERRMODE=>SWEF_DB_PDO_E_MODE));
         }
         catch (\PDOException $e) {
             array_push ($this->errors,'Database not connected: '.$e->getMessage());
             \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
             return SWEF_BOOL_FALSE;
         }
+        $this->DSN          = $dsn;
+        $this->type         = $type;
         return SWEF_BOOL_TRUE;
     }
 

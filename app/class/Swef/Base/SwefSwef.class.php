@@ -51,7 +51,7 @@ class SwefSwef {
     }
 
     public function _db ( ) {
-        $this->db               = new \Swef\Bespoke\Database ();
+        $this->db               = new \Swef\Bespoke\Database (null,null,null);
         if ($this->err=$this->db->dbErrorLast()) {
             $this->diagnosticPush ('SWEF ERROR: '.$this->err);
             return SWEF_BOOL_FALSE;
@@ -222,7 +222,7 @@ class SwefSwef {
     private function contextsLoad ($force=null) {
         if (SWEF_CONFIG_STORE_LOOKUP_FILES && !$force) {
             $file           = SWEF_STR_CONTEXTS.SWEF_STR_EXT_VAR;
-            $this->contexts = $this->lookupFileGet ($file);
+            $this->contexts = $this->lookupFileGet (SWEF_VENDOR_SWEF,$file);
             if (is_array($this->contexts) && count($this->contexts)) {
                 $this->diagnosticPush ('contextsLoad(): Got contexts from file inclusion');
                 return SWEF_BOOL_TRUE;
@@ -235,7 +235,7 @@ class SwefSwef {
             return SWEF_BOOL_FALSE;
         }
         if (SWEF_CONFIG_STORE_LOOKUP_FILES) {
-            $this->lookupFileSet ($file,$this->contexts);
+            $this->lookupFileSet (SWEF_VENDOR_SWEF,$file,$this->contexts);
         }
         if ($this->cli) {
             return SWEF_BOOL_TRUE;
@@ -484,33 +484,44 @@ class SwefSwef {
         return SWEF_BOOL_TRUE;
     }
 
-    public function lookupFileGet ($file) {
-        if (!is_readable(SWEF_DIR_LOOKUP.'/'.$file)) {
+    public function lookupFileGet ($vendor,$file) {
+        if (!is_readable(SWEF_DIR_LOOKUP.'/'.$vendor.'/'.$file)) {
             return SWEF_BOOL_FALSE;
         }
-        $file       = SWEF_DIR_LOOKUP.'/'.$file;
-        $var        = SWEF_BOOL_FALSE;
-        $var        = @require_once $file;
-        return $var;
+        try {
+            $var = @require_once SWEF_DIR_LOOKUP.'/'.$vendor.'/'.$file;
+            return $var;
+        }
+        catch (ParseError $e) {
+            $this->diagnosticPush ('lookupFileGet(): failed to parse'.$vendor.'/'.$file);
+            return SWEF_BOOL_FALSE;
+        }
     }
 
-    public function lookupFileSet ($file,$var) {
-        $file       = SWEF_DIR_LOOKUP.'/'.$file;
-        $str        = var_export ($var,SWEF_BOOL_TRUE);
-        $str        = var_export ($var,SWEF_BOOL_TRUE);
-        $fp         = @fopen ($file,SWEF_F_WRITE);
-        if ($fp) {
-            $write  = @fwrite ($fp,'<?php'.SWEF_STR__CRLF.'return '.$str.';'.SWEF_STR__CRLF.' ?>');
-            @fclose ($fp);
-            @chmod ($file,SWEF_CHMOD_FILE);
+    public function lookupFileSet ($vendor,$file,$var) {
+        $dir        = SWEF_DIR_LOOKUP.'/'.$vendor;
+        if (!is_dir($dir)) {
+            mkdir ($dir,SWEF_CHMOD_DIR,SWEF_BOOL_TRUE);
+            if (!is_dir($dir)) {
+                $this->diagnosticPush ('lookupFileSet(): failed to make '.$dir);
+                return SWEF_BOOL_FALSE;
+            }
         }
-        if ($write) {
-            return SWEF_BOOL_TRUE;
+        $str        = var_export ($var,SWEF_BOOL_TRUE);
+        $fp         = @fopen ($dir.'/'.$file,SWEF_F_WRITE);
+        if (!$fp) {
+            return SWEF_BOOL_FALSE;
         }
-        return SWEF_BOOL_FALSE;
+        $write  = @fwrite ($fp,'<?php'.SWEF_STR__CRLF.'return '.$str.';'.SWEF_STR__CRLF.' ?>');
+        @fclose ($fp);
+        @chmod ($dir.'/'.$file,SWEF_CHMOD_FILE);
+        if (!$write) {
+            return SWEF_BOOL_FALSE;
+        }
+        return SWEF_BOOL_TRUE;
     }
 
-    public function lookupLoad ($handle,$proc,$arg=null,$force=null) {
+    public function lookupLoad ($vendor,$handle,$proc,$arg=null,$force=null) {
         if (!strlen($handle)) {
             $this->diagnosticPush ('lookupLoad(): requires a handle');
             return SWEF_BOOL_FALSE;
@@ -523,7 +534,7 @@ class SwefSwef {
             else {
                 $file       = $handle.SWEF_STR_EXT_VAR;
             }
-            $array          = $this->lookupFileGet ($file);
+            $array          = $this->lookupFileGet ($vendor,$file);
             if (is_array($array) && count($array)) {
                 $this->diagnosticPush ('lookupLoad(): Got '.$handle.' from file inclusion');
                 return $array;
@@ -541,7 +552,7 @@ class SwefSwef {
             return SWEF_BOOL_FALSE;
         }
         if (SWEF_CONFIG_STORE_LOOKUP_FILES && count($array)) {
-            $this->lookupFileSet ($file,$array);
+            $this->lookupFileSet ($vendor,$file,$array);
         }
         return $array;
     }
@@ -549,27 +560,27 @@ class SwefSwef {
     private function lookupsLoad ( ) {
         // From database (or session or include file where configured)
         $c                  = $this->context[SWEF_COL_CONTEXT];
-        $this->usergroups   = $this->lookupLoad ( SWEF_COL_USERGROUPS, SWEF_CALL_USERGROUPSLOAD    );
+        $this->usergroups   = $this->lookupLoad ( SWEF_VENDOR_SWEF, SWEF_COL_USERGROUPS, SWEF_CALL_USERGROUPSLOAD    );
         if (!is_array($this->usergroups) || !count($this->usergroups)) {
             $this->err      = 'Could not load usergroup data (or there was no data)';
         }
-        $this->plugins      = $this->lookupLoad ( SWEF_COL_PLUGINS,    SWEF_CALL_PLUGINSLOAD,   $c );
+        $this->plugins      = $this->lookupLoad ( SWEF_VENDOR_SWEF, SWEF_COL_PLUGINS,    SWEF_CALL_PLUGINSLOAD,   $c );
         if (!is_array($this->plugins)) {
             $this->err      = 'Could not load plugin data';
         }
-        $this->routers      = $this->lookupLoad ( SWEF_COL_ROUTERS,    SWEF_CALL_ROUTERSLOAD,   $c );
+        $this->routers      = $this->lookupLoad ( SWEF_VENDOR_SWEF, SWEF_COL_ROUTERS,    SWEF_CALL_ROUTERSLOAD,   $c );
         if (!is_array($this->routers) || !count($this->routers)) {
             $this->err      = 'Could not load router data (or there was no data)';
         }
-        $this->templates    = $this->lookupLoad ( SWEF_COL_TEMPLATES,  SWEF_CALL_TEMPLATESLOAD, $c );
+        $this->templates    = $this->lookupLoad ( SWEF_VENDOR_SWEF, SWEF_COL_TEMPLATES,  SWEF_CALL_TEMPLATESLOAD, $c );
         if (!is_array($this->templates) || !count($this->templates)) {
             $this->err      = 'Could not load template data (or there was no data)';
         }
-        $this->apis         = $this->lookupLoad ( SWEF_COL_APIS,       SWEF_CALL_APISLOAD          );
+        $this->apis         = $this->lookupLoad ( SWEF_VENDOR_SWEF, SWEF_COL_APIS,       SWEF_CALL_APISLOAD          );
         if (!is_array($this->apis) || !count($this->apis)) {
             $this->err      = 'Could not load API data (or there was no data)';
         }
-        $this->db->inputs   = $this->lookupLoad ( SWEF_COL_INPUTS,     SWEF_CALL_INPUTSLOAD        );
+        $this->db->inputs   = $this->lookupLoad ( SWEF_VENDOR_SWEF, SWEF_COL_INPUTS,     SWEF_CALL_INPUTSLOAD        );
         if (!is_array($this->db->inputs) || !count($this->db->inputs)) {
             $this->err      = 'Could not load input data (or there was no data)';
         }
