@@ -110,6 +110,10 @@ class SwefDatabase {
         return $data;
     }
 
+    public function dbCallLast ( ) {
+        return $this->calls[count($this->calls)-1];
+    }
+
     public function dbCallNoticeLast ( ) {
         if (count($this->notices)==0) {
             return null;
@@ -263,6 +267,65 @@ class SwefDatabase {
     public function dbName () {
         preg_match (SWEF_STR_PDO_DBNAME_PREG,$this->DSN,$m);
         return $m[2];
+    }
+
+    public function dbPDOAttribute ($attr) {
+        return $this->PDO->getAttribute ($attr);
+    }
+
+    public function dbQuery ( ) {
+        $this->notices      = array ();
+        if (!in_array($this->type,$this->types)) {
+            array_push ($this->errors,'Database type "'.$this->type.'" is not supported');
+            \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
+            return SWEF_BOOL_FALSE;
+        }
+        // Process inputs
+        $args               = func_get_args ();
+        $query              = array_shift ($args);
+        if (!$query) {
+            array_push ($this->errors,'Query not given');
+            \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
+            return SWEF_BOOL_FALSE;
+        }
+        array_push ($this->queries,$query.'  [ '.implode(SWEF_STR__COMMA,$args).' ]');
+        try {
+            $stmt           = $this->PDO->prepare ($query);
+        }
+        catch (\PDOException $e) {
+            array_push ($this->errors,$proc.'() statement not prepared: '.$e->getMessage());
+            \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
+            return SWEF_BOOL_FALSE;
+        }
+        // Escape and bind arguments
+        foreach ($args as $i=>$arg) {
+            try {
+                $stmt->bindValue (($i+1),$arg,\PDO::PARAM_STR);
+            }
+            catch (\PDOException $e) {
+                array_push ($this->errors,$proc.'() could not bind parameter: '.$e->getMessage());
+                \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
+                return SWEF_BOOL_FALSE;
+            }
+        }
+        try {
+            $stmt->execute ();
+        }
+        catch (\PDOException $e) {
+            array_push ($this->errors,$proc.'() could not execute query: '.$e->getMessage());
+            \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
+            return SWEF_BOOL_FALSE;
+        }
+        // Execution was successful
+        try {
+            $data           =  $stmt->fetchAll (\PDO::FETCH_ASSOC);
+            $stmt->closeCursor ();
+        }
+        catch (\PDOException $e) {
+            // Successful execution but no data was fetched
+            return SWEF_BOOL_TRUE;
+        }
+        return $data;
     }
 
 }
