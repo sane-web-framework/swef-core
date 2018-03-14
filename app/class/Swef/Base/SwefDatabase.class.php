@@ -26,7 +26,8 @@ class SwefDatabase {
     public function dbCall ( ) {
         $this->notices      = array ();
         if (!in_array($this->type,$this->types)) {
-            array_push ($this->errors,'Database type "'.$this->type.'" is not supported');
+            array_push ($this->errors,'Database type "'.$this->type.'" is not supported - not in:');
+            array_push ($this->errors,print_r($this->types,SWEF_BOOL_TRUE));
             \Swef\Bespoke\Swef::statusHeader (SWEF_HTTP_STATUS_CODE_555);
             return SWEF_BOOL_FALSE;
         }
