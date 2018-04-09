@@ -591,7 +591,13 @@ class SwefSwef {
     }
 
     private function notificationInit ( ) {
-        $this->notification     = new \Swef\Bespoke\Notification ($this->cli);
+        $this->notification     = new \Swef\Bespoke\Notification ();
+        if (is_array($ns=$this->sessionGet(SWEF_STR_NOTIFICATIONS))) {
+            foreach ($ns as $n) {
+                $this->notify ($n);
+            }
+        }
+        $this->sessionSet (SWEF_STR_NOTIFICATIONS,array());
     }
 
     public function notificationPurge ( ) {
