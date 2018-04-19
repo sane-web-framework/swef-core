@@ -1,7 +1,9 @@
 <?php
 
 namespace Swef;
+
 error_reporting (-1);
+
 function swef ( ) {
     if (version_compare(PHP_VERSION,'7.0.0','<')) {
         die ('Application error [1]: PHP minimum requirement is 7.0.0');
