@@ -11,6 +11,7 @@ class SwefPage extends \Swef\Bespoke\Endpoint {
     public   $buffer;
     public   $httpE;
     public   $httpHeader;
+    public   $requestPath; // URI without query string
     public   $requestURI;
     public   $scriptBuffer;
     public   $pageTitle                 = 'Untitled';
@@ -22,6 +23,7 @@ class SwefPage extends \Swef\Bespoke\Endpoint {
             $this->baseDir              = SWEF_STR__EMPTY;
         }
         $this->requestURI               = substr ($_SERVER[SWEF_STR_REQUEST_URI],strlen($this->baseDir));
+        $this->requestPath              = explode (SWEF_STR__QMARK,$this->requestURI)[SWEF_INT_0];
     }
 
     public function __destruct () {

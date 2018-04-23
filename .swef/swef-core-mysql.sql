@@ -104,7 +104,6 @@ DROP PROCEDURE IF EXISTS `swefMembershipsAnon`$$
 CREATE PROCEDURE `swefMembershipsAnon`()
 BEGIN
   SELECT `membership_Usergroup` AS `usergroup`
-        ,'usergroup,explain' AS `explain`
   FROM `swef_user`
   LEFT JOIN `swef_membership`
          ON `swef_membership`.`membership_UUID`=`swef_user`.`user_UUID`
@@ -115,7 +114,6 @@ DROP PROCEDURE IF EXISTS `swefMembershipsLoad`$$
 CREATE PROCEDURE `swefMembershipsLoad`(IN `eml` VARCHAR(255) CHARSET ascii)
 BEGIN
   SELECT `membership_Usergroup` AS `usergroup`
-        ,'usergroup,explain' AS `explain`
   FROM `swef_user`
   LEFT JOIN `swef_membership`
          ON `swef_membership`.`membership_UUID`=`swef_user`.`user_UUID`
