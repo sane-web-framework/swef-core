@@ -1,5 +1,6 @@
 <?php
 
+
 // SYSTEM CONSTANTS
 require_once './app/config/static/Swef/Swef.defines.php';
 
