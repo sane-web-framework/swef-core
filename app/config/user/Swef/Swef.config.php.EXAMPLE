@@ -78,7 +78,7 @@ define ( 'SWEF_DATETIME_FORMAT_TIMESTAMP',      'c'                             
 define ( 'SWEF_DATETIME_TZ_DATA',               'Europe/London'                         );
 define ( 'SWEF_DATETIME_TZ_GMT',                'Europe/London'                         );
 define ( 'SWEF_ENDPOINTS_MAX',                  '32'                                    );
-define ( 'SWEF_ENDPOINT_URI_PREG_MATCH',        '<^[a-z0-9_.]*$>'                       );
+define ( 'SWEF_ENDPOINT_URI_PREG_MATCH',        '<^[a-z0-9_.\-]*$>'                     );
 define ( 'SWEF_SESSION_KEY',                    'SWEF'                                  );
 define ( 'SWEF_SESSION_KEY_CONTEXTS',           'SWEF_CONTEXTS'                         );
 define ( 'SWEF_SESSION_KEY_TRIGGER',            'SWEF_SESSIONED'                        );
