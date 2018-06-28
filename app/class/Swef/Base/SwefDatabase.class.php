@@ -10,6 +10,7 @@ class SwefDatabase {
     private $filter;
     public  $inputs;
     public  $notices        = array ();
+    public  $queries        = array ();
     private $PDO;
     private $type;
     private $types;
